@@ -1,0 +1,94 @@
+---
+title: "Phys_Compare"
+output: html_notebook
+---
+
+This is the initial Import and cleanup of the Physician file before uploading the file to s3 for use in an EMR cluster.
+
+```{r}
+library(gapminder)
+library(DataExplorer)
+library(tidyverse)
+library(dplyr)
+library(readxl)
+library(paws)
+```
+
+## Import Data for EDA:
+```{r}
+compare <- read.csv('Data/Physician_Compare_2017_Individual_EC_Public_Reporting-Overall_MIPS_Performance.csv', header = T)
+```
+```{r}
+#Show what the values are for each column
+plot_str(compare)
+```
+```{r}
+#Plot missing values
+plot_missing(compare)
+```
+```{r}
+# New variable with cleaned missing rows
+newcompare <- na.omit(compare)
+plot_missing(newcompare)
+```
+```{r}
+#Histogram of continuous variables
+plot_histogram(newcompare)
+```
+
+```{r}
+# Density of continuous variables
+plot_density(newcompare)
+```
+```{r}
+# Bar Plot of categorical variables
+plot_bar(newcompare) 
+```
+```{r}
+# Write cleaned data to csv
+file_name = "Cleaned_Compare.csv"
+write.csv(newcompare, file = file_name)
+
+```
+```{r}
+# Upload file to s3
+s3$put_object(
+  Body = s3_example,
+  Bucket = bucket_name,
+  Key = file_name
+)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
